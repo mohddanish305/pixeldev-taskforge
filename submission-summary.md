@@ -53,6 +53,11 @@ Choose a repository and feature, generate a package, review the brief, inspect t
 
 Coding Task Factory requires a reusable strategy for generating realistic feature-development tasks with requirements, reference implementations, tests, and validation. TaskForge directly implements that pipeline and packages the evidence in a judge-friendly format.
 
+## Links
+
+- GitHub repository: https://github.com/mohddanish305/pixeldev-taskforge
+- Live demo: https://mohddanish305.github.io/pixeldev-taskforge/
+
 ## Tech stack
 
 HTML, CSS, JavaScript, JSON task packages, Node-based validation checks.

@@ -16,12 +16,12 @@ Deadline: 6 Dec 2026, 11:55 PM IST
 - [x] Demo script prepared
 - [x] Submission summary prepared
 
-## Needs Mohd approval before external action
+## External status
 
-- [ ] Host the demo publicly
-- [ ] Create or update a GitHub repository
+- [x] Host the demo publicly: https://mohddanish305.github.io/pixeldev-taskforge/
+- [x] Create a GitHub repository: https://github.com/mohddanish305/pixeldev-taskforge
 - [ ] Record and upload the demo video
-- [ ] Fill the Hack2skill submission form
+- [ ] Fill the Hack2skill submission form after confirming every field with Mohd
 - [ ] Submit the final prototype
 
 ## Form-ready fields
