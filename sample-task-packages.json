@@ -1,0 +1,336 @@
+[
+  {
+    "id": "TF-2026-904",
+    "title": "Add discount codes with eligibility rules",
+    "track": "Coding Task Factory",
+    "repo": {
+      "name": "Shopping Cart App",
+      "version": "cart-app@v1.4.0",
+      "stack": "JavaScript · Node.js",
+      "starterFiles": [
+        "src/cart.js",
+        "src/checkout.js",
+        "src/pricing.js",
+        "tests/cart.test.js"
+      ],
+      "existingFeatures": [
+        "addItem",
+        "removeItem",
+        "calculateSubtotal",
+        "checkout"
+      ]
+    },
+    "feature": "Discount codes",
+    "difficulty": "Medium",
+    "language": "JavaScript",
+    "story": "As a shopper, I want to apply a discount code during checkout so that eligible orders receive the correct saving without breaking cart totals.",
+    "explanation": "Simple words me: user checkout par coupon code lagayega. Code tabhi chalega jab cart ki value minimum limit se zyada ho, code expire na ho, aur discount total se zyada na ho jaye. Galat code par cart total change nahi hona chahiye.",
+    "requirements": [
+      "Support STUDENT10 for 10% off when subtotal is at least ₹500.",
+      "Support FIRST500 for ₹500 off when subtotal is at least ₹1,999.",
+      "Reject expired and unknown codes with a clear message.",
+      "Never allow discount to exceed the cart subtotal.",
+      "Return subtotal, discount, total, appliedCode, and message in one result object.",
+      "Keep the implementation reusable as a pure function where possible."
+    ],
+    "acceptanceCriteria": [
+      "STUDENT10 on ₹1,000 gives ₹100 discount and ₹900 total.",
+      "FIRST500 on ₹2,500 gives ₹500 discount and ₹2,000 total.",
+      "FIRST500 on ₹1,200 is rejected because the minimum is not met.",
+      "Unknown codes do not change the total."
+    ],
+    "edgeCases": [
+      "Empty cart",
+      "Lowercase coupon input",
+      "Expired coupon",
+      "Discount larger than subtotal",
+      "Cart quantity changes after coupon is applied",
+      "Input values with extra whitespace"
+    ],
+    "tags": [
+      "pricing",
+      "checkout",
+      "rules-engine"
+    ],
+    "referenceImplementation": "function applyDiscount(cart, code, now = new Date()) {\n  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);\n  const normalized = String(code || \"\").trim().toUpperCase();\n  const rules = {\n    STUDENT10: { type: \"percent\", value: 10, min: 500 },\n    FIRST500: { type: \"flat\", value: 500, min: 1999 },\n    OLD50: { type: \"flat\", value: 50, min: 0, expiresAt: \"2025-01-01\" }\n  };\n  const rule = rules[normalized];\n  if (!rule) return { subtotal, discount: 0, total: subtotal, appliedCode: null, message: \"Invalid code\" };\n  if (rule.expiresAt && now > new Date(rule.expiresAt)) {\n    return { subtotal, discount: 0, total: subtotal, appliedCode: null, message: \"Code expired\" };\n  }\n  if (subtotal < rule.min) {\n    return { subtotal, discount: 0, total: subtotal, appliedCode: null, message: \"Minimum order not met\" };\n  }\n  const raw = rule.type === \"percent\" ? Math.round(subtotal * rule.value / 100) : rule.value;\n  const discount = Math.min(raw, subtotal);\n  return { subtotal, discount, total: subtotal - discount, appliedCode: normalized, message: \"Discount applied\" };\n}",
+    "featureTests": "test(\"applies STUDENT10 on eligible cart\", () => {\n  expect(applyDiscount([{ price: 1000, qty: 1 }], \"student10\").total).toBe(900);\n});\n\ntest(\"rejects FIRST500 below minimum\", () => {\n  const result = applyDiscount([{ price: 1200, qty: 1 }], \"FIRST500\");\n  expect(result.discount).toBe(0);\n  expect(result.message).toMatch(/minimum/i);\n});\n\ntest(\"unknown code keeps total unchanged\", () => {\n  expect(applyDiscount([{ price: 800, qty: 1 }], \"NOPE\").total).toBe(800);\n});",
+    "regressionChecks": [
+      "addItem still merges duplicate products",
+      "removeItem still removes only the selected product",
+      "calculateSubtotal remains unchanged when no coupon is applied"
+    ],
+    "validation": {
+      "rows": [
+        {
+          "name": "STUDENT10 eligible cart",
+          "expected": 900,
+          "reference": 900,
+          "broken": 1000,
+          "referencePass": true,
+          "brokenCaught": true
+        },
+        {
+          "name": "FIRST500 below minimum",
+          "expected": 1200,
+          "reference": 1200,
+          "broken": 700,
+          "referencePass": true,
+          "brokenCaught": true
+        },
+        {
+          "name": "Unknown code",
+          "expected": 800,
+          "reference": 800,
+          "broken": 800,
+          "referencePass": true,
+          "brokenCaught": false
+        }
+      ],
+      "summary": {
+        "referencePassed": 3,
+        "totalChecks": 3,
+        "brokenCaught": 2,
+        "score": 83
+      }
+    },
+    "rubric": [
+      {
+        "criterion": "Requirements are clear and achievable",
+        "weight": 25
+      },
+      {
+        "criterion": "Reference implementation satisfies the task",
+        "weight": 30
+      },
+      {
+        "criterion": "Feature tests catch missing or incorrect behavior",
+        "weight": 25
+      },
+      {
+        "criterion": "Regression checks protect existing functionality",
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "id": "TF-2026-342",
+    "title": "Add note search with tag filtering",
+    "track": "Coding Task Factory",
+    "repo": {
+      "name": "Notes App",
+      "version": "notes-app@v2.1.0",
+      "stack": "JavaScript · React",
+      "starterFiles": [
+        "src/notes.js",
+        "src/search.js",
+        "src/tags.js",
+        "tests/notes.test.js"
+      ],
+      "existingFeatures": [
+        "createNote",
+        "editNote",
+        "deleteNote",
+        "listNotes"
+      ]
+    },
+    "feature": "Search + tags",
+    "difficulty": "Medium",
+    "language": "JavaScript",
+    "story": "As a student, I want to search notes by title, body, or tag so that I can revise the right topic quickly.",
+    "explanation": "Simple words me: student search box me word likhega. Note ke title, body ya tag me woh word mile to note dikhna chahiye. Search chhote-bade letters ko ignore kare aur latest note pehle aaye.",
+    "requirements": [
+      "Search title, body, and tags.",
+      "Ignore letter case and extra spaces.",
+      "Optional tag filter must narrow results.",
+      "Sort by updatedAt descending.",
+      "Empty query returns all notes for the selected tag.",
+      "Keep the implementation reusable as a pure function where possible."
+    ],
+    "acceptanceCriteria": [
+      "Query 'dbms' finds a note tagged DBMS.",
+      "Query 'normal' finds body text 'Normalization'.",
+      "Tag filter excludes notes without that tag.",
+      "Newer matching note appears first."
+    ],
+    "edgeCases": [
+      "Blank query",
+      "Missing tags array",
+      "Duplicate tags",
+      "Notes with same updatedAt",
+      "Input values with extra whitespace"
+    ],
+    "tags": [
+      "search",
+      "tags",
+      "student-tools"
+    ],
+    "referenceImplementation": "function searchNotes(notes, query = \"\", tag = \"\") {\n  const q = query.trim().toLowerCase();\n  const wantedTag = tag.trim().toLowerCase();\n  return notes\n    .filter(note => {\n      const tags = (note.tags || []).map(t => t.toLowerCase());\n      const matchesQuery = !q || [note.title, note.body, ...tags].join(\" \").toLowerCase().includes(q);\n      const matchesTag = !wantedTag || tags.includes(wantedTag);\n      return matchesQuery && matchesTag;\n    })\n    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));\n}",
+    "featureTests": "test(\"finds notes by tag\", () => {\n  const notes = [{ title: \"Unit 2\", body: \"Tables\", tags: [\"DBMS\"], updatedAt: \"2026-01-02\" }];\n  expect(searchNotes(notes, \"dbms\")).toHaveLength(1);\n});\ntest(\"sorts newest first\", () => {\n  const notes = [\n    { title: \"Old\", body: \"sql\", tags: [], updatedAt: \"2026-01-01\" },\n    { title: \"New\", body: \"sql\", tags: [], updatedAt: \"2026-01-03\" }\n  ];\n  expect(searchNotes(notes, \"sql\")[0].title).toBe(\"New\");\n});",
+    "regressionChecks": [
+      "createNote still adds a note",
+      "deleteNote still removes only the selected note"
+    ],
+    "validation": {
+      "rows": [
+        {
+          "name": "Search by tag",
+          "expected": [
+            "Unit 2"
+          ],
+          "reference": [
+            "Unit 2"
+          ],
+          "broken": [],
+          "referencePass": true,
+          "brokenCaught": true
+        },
+        {
+          "name": "Search body and sort newest",
+          "expected": [
+            "New SQL"
+          ],
+          "reference": [
+            "New SQL"
+          ],
+          "broken": [],
+          "referencePass": true,
+          "brokenCaught": true
+        }
+      ],
+      "summary": {
+        "referencePassed": 2,
+        "totalChecks": 2,
+        "brokenCaught": 2,
+        "score": 100
+      }
+    },
+    "rubric": [
+      {
+        "criterion": "Requirements are clear and achievable",
+        "weight": 25
+      },
+      {
+        "criterion": "Reference implementation satisfies the task",
+        "weight": 30
+      },
+      {
+        "criterion": "Feature tests catch missing or incorrect behavior",
+        "weight": 25
+      },
+      {
+        "criterion": "Regression checks protect existing functionality",
+        "weight": 20
+      }
+    ]
+  },
+  {
+    "id": "TF-2026-554",
+    "title": "Add category budget alerts",
+    "track": "Coding Task Factory",
+    "repo": {
+      "name": "Expense Tracker",
+      "version": "expense-tracker@v0.9.3",
+      "stack": "JavaScript · Node.js",
+      "starterFiles": [
+        "src/expenses.js",
+        "src/budgets.js",
+        "src/export.js",
+        "tests/expenses.test.js"
+      ],
+      "existingFeatures": [
+        "addExpense",
+        "listExpenses",
+        "monthlyTotal",
+        "deleteExpense"
+      ]
+    },
+    "feature": "Budget alerts",
+    "difficulty": "Medium",
+    "language": "JavaScript",
+    "story": "As a user, I want warnings when a category budget is close to or above its limit.",
+    "explanation": "Simple words me: agar kisi category me budget ka 80% kharch ho jaye to warning aayegi. 100% se zyada ho jaye to exceeded alert aayega. Kam kharch par koi alert nahi aana chahiye.",
+    "requirements": [
+      "Calculate spent amount per category.",
+      "Warn when usage is at least 80% and below 100%.",
+      "Mark exceeded when usage is at least 100%.",
+      "Ignore categories without a positive budget.",
+      "Return category, spent, budget, percent, and level.",
+      "Keep the implementation reusable as a pure function where possible."
+    ],
+    "acceptanceCriteria": [
+      "Food ₹800 of ₹1,000 returns warning.",
+      "Travel ₹1,200 of ₹1,000 returns exceeded.",
+      "Books ₹300 of ₹1,000 returns no alert."
+    ],
+    "edgeCases": [
+      "Zero budget",
+      "Missing category",
+      "Exact 80% usage",
+      "Exact 100% usage",
+      "Input values with extra whitespace"
+    ],
+    "tags": [
+      "budgets",
+      "alerts",
+      "finance"
+    ],
+    "referenceImplementation": "function budgetAlerts(expenses, budgets) {\n  return Object.entries(budgets)\n    .filter(([, budget]) => budget > 0)\n    .map(([category, budget]) => {\n      const spent = expenses.filter(e => e.category === category).reduce((sum, e) => sum + e.amount, 0);\n      const percent = Math.round((spent / budget) * 100);\n      const level = percent >= 100 ? \"exceeded\" : percent >= 80 ? \"warning\" : \"ok\";\n      return { category, spent, budget, percent, level };\n    })\n    .filter(item => item.level !== \"ok\");\n}",
+    "featureTests": "test(\"warns at 80 percent\", () => {\n  const alerts = budgetAlerts([{ category: \"Food\", amount: 800 }], { Food: 1000 });\n  expect(alerts[0].level).toBe(\"warning\");\n});",
+    "regressionChecks": [
+      "monthlyTotal still sums all expenses",
+      "deleteExpense still updates totals"
+    ],
+    "validation": {
+      "rows": [
+        {
+          "name": "Warning at 80%",
+          "expected": "warning",
+          "reference": "warning",
+          "broken": "ok",
+          "referencePass": true,
+          "brokenCaught": true
+        },
+        {
+          "name": "Exceeded at 120%",
+          "expected": "exceeded",
+          "reference": "exceeded",
+          "broken": "exceeded",
+          "referencePass": true,
+          "brokenCaught": false
+        },
+        {
+          "name": "No alert below threshold",
+          "expected": "ok",
+          "reference": "ok",
+          "broken": "ok",
+          "referencePass": true,
+          "brokenCaught": false
+        }
+      ],
+      "summary": {
+        "referencePassed": 3,
+        "totalChecks": 3,
+        "brokenCaught": 1,
+        "score": 67
+      }
+    },
+    "rubric": [
+      {
+        "criterion": "Requirements are clear and achievable",
+        "weight": 25
+      },
+      {
+        "criterion": "Reference implementation satisfies the task",
+        "weight": 30
+      },
+      {
+        "criterion": "Feature tests catch missing or incorrect behavior",
+        "weight": 25
+      },
+      {
+        "criterion": "Regression checks protect existing functionality",
+        "weight": 20
+      }
+    ]
+  }
+]

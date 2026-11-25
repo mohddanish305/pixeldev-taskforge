@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PixelDev TaskForge — Feature Task Generator</title>
+  <meta name="description" content="Generate realistic coding task packages with requirements, reference solutions, tests, and validation evidence." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">P</div>
+      <div>
+        <strong>PixelDev TaskForge</strong>
+        <span>Coding Task Factory prototype</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="pill">Innodata AI Hackathon</span>
+      <span class="pill muted">Deadline · 6 Dec 2026</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Feature Task Generator</p>
+        <h1>Repo se realistic coding tasks generate karo.</h1>
+        <p class="lead">Har task package me clear requirements, Hinglish explanation, reference solution, feature tests, regression checks aur validation evidence milega — bilkul AI coding evaluation ke format me.</p>
+      </div>
+      <div class="hero-card" aria-label="Prototype summary">
+        <div><strong id="metricPackages">3</strong><span>sample packages</span></div>
+        <div><strong id="metricChecks">12</strong><span>validation checks</span></div>
+        <div><strong>2</strong><span>languages</span></div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <aside class="panel controls" aria-label="Task generator controls">
+        <div class="panel-head">
+          <h2>Task setup</h2>
+          <p>Repo aur feature choose karo, phir package generate karo.</p>
+        </div>
+
+        <label class="field">
+          <span>Sample repository</span>
+          <select id="repoSelect"></select>
+        </label>
+
+        <label class="field">
+          <span>Feature theme</span>
+          <select id="featureSelect"></select>
+        </label>
+
+        <div class="field">
+          <span>Difficulty</span>
+          <div class="segmented" id="difficultyGroup" role="group" aria-label="Difficulty">
+            <button type="button" data-value="Easy">Easy</button>
+            <button type="button" data-value="Medium" class="active">Medium</button>
+            <button type="button" data-value="Hard">Hard</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span>Reference language</span>
+          <div class="segmented" id="languageGroup" role="group" aria-label="Reference language">
+            <button type="button" data-value="JavaScript" class="active">JavaScript</button>
+            <button type="button" data-value="Python">Python</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span>Explanation style</span>
+          <div class="segmented" id="explainGroup" role="group" aria-label="Explanation style">
+            <button type="button" data-value="Hinglish" class="active">Hinglish</button>
+            <button type="button" data-value="English">English</button>
+          </div>
+        </div>
+
+        <button class="primary" id="generateBtn" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3m0 12v3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1M3 12h3m12 0h3M5.6 18.4l2.1-2.1m8.6-8.6 2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg>
+          Generate task package
+        </button>
+
+        <div class="sample-box">
+          <h3>Demo samples</h3>
+          <button type="button" class="sample" data-sample="shopping-discount">Shopping cart · Discount codes</button>
+          <button type="button" class="sample" data-sample="notes-search">Notes app · Search + tags</button>
+          <button type="button" class="sample" data-sample="expense-budget">Expense tracker · Budget alerts</button>
+        </div>
+      </aside>
+
+      <section class="panel output" aria-label="Generated task package">
+        <div class="package-head">
+          <div>
+            <p class="eyebrow" id="packageId">TF-2026-001</p>
+            <h2 id="packageTitle">Add discount codes with eligibility rules</h2>
+            <p id="packageMeta">cart-app@v1.4.0 · JavaScript · Medium</p>
+          </div>
+          <div class="head-actions">
+            <button type="button" id="copyJsonBtn" class="ghost">Copy JSON</button>
+            <button type="button" id="downloadJsonBtn" class="ghost">Download</button>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Package sections">
+          <button type="button" class="tab active" data-tab="brief">Brief</button>
+          <button type="button" class="tab" data-tab="solution">Solution</button>
+          <button type="button" class="tab" data-tab="tests">Tests</button>
+          <button type="button" class="tab" data-tab="validation">Validation</button>
+          <button type="button" class="tab" data-tab="json">JSON</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-brief"></div>
+        <div class="tab-panel" id="tab-solution"></div>
+        <div class="tab-panel" id="tab-tests"></div>
+        <div class="tab-panel" id="tab-validation"></div>
+        <div class="tab-panel" id="tab-json"></div>
+      </section>
+    </section>
+
+    <section class="submission">
+      <div>
+        <h2>Submission checklist</h2>
+        <p>Hackathon ke liye ye prototype teen cheezein prove karta hai: reusable generation, testable packages, aur validation evidence.</p>
+      </div>
+      <ul>
+        <li><strong>Pipeline:</strong> repo + feature + difficulty se package generate hota hai.</li>
+        <li><strong>Evidence:</strong> reference logic par checks chalte hain aur broken logic pakda jata hai.</li>
+        <li><strong>Demo:</strong> judge live package generate karke JSON download kar sakta hai.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
